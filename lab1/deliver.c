@@ -24,7 +24,7 @@ int main(int argc, char const *argv[]) {
     serv_addr.sin_addr.s_addr = inet_addr(argv[1]);
     memset(serv_addr.sin_zero, '\0', sizeof(serv_addr.sin_zero));
     
-    fgets(buf, sizeof(buf), 256);
+    fgets(buf, 256, stdin);
     
     sendto(sockfd, buf, 256, 0, (struct sockaddr *) &serv_addr, serv_addr_size);
     
