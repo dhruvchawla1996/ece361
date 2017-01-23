@@ -10,9 +10,12 @@ int main(int argc, char const *argv[]) {
     int sockfd;
     int serv_port = atoi(argv[2]);
     struct sockaddr_in serv_addr;
+    socklen_t serv_addr_size;
     char buf[256];
 
     bzero(buf, 256);
+    
+    serv_addr_size = sizeof(serv_addr);
 
     sockfd = socket(PF_INET, SOCK_DGRAM, 0);
 
@@ -20,6 +23,14 @@ int main(int argc, char const *argv[]) {
     serv_addr.sin_port = htons(serv_port);
     serv_addr.sin_addr.s_addr = inet_addr(argv[1]);
     memset(serv_addr.sin_zero, '\0', sizeof(serv_addr.sin_zero));
+    
+    fgets(buf, sizeof(buf), 256);
+    
+    sendto(sockfd, buf, 256, 0, (struct sockaddr *) &serv_addr, serv_addr_size);
+    
+    recvfrom(sockfd, buf, 256, 0, (struct sockaddr *) &serv_addr, &serv_addr_size);
+    
+    printf("A file transfer can start\n");
 
     close(sockfd);
     return 0;
