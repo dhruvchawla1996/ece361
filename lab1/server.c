@@ -30,11 +30,15 @@ int main(int argc, char const *argv[])
 	clilen = sizeof(cli_addr);
 
 	recvfrom(sockfd, buf, 256, 0, (struct sockaddr *) &cli_addr, &clilen);
-
-	if (strcmp(buf, "yes") == 0) {
-		sendto(sockfd, "ftp", 256, 0, (struct sockaddr *) &cli_addr, sizeof(serv_addr));
+        
+        printf("%s", &buf);
+        
+	if (strcmp(buf, "ftp") == 0) {
+		sendto(sockfd, "yes", 256, 0, (struct sockaddr *) &cli_addr, sizeof(serv_addr));
+                printf("Connection established\n");
 	} else {
 		sendto(sockfd, "no", 256, 0, (struct sockaddr *) &cli_addr, sizeof(serv_addr));
+                printf("Connection not established\n");
 	}
 
 	close(sockfd);

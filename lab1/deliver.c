@@ -5,6 +5,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <unistd.h>
+
 
 int main(int argc, char const *argv[]) {
     if (argc < 3) exit(1);
@@ -44,10 +46,37 @@ int main(int argc, char const *argv[]) {
     
     fgets(buf, 256, stdin);
     
+    char file_name[256]; 
+     
+    int i;
+    
+    if(buf[0]=='f'&&buf[1]=='t'&&buf[2]=='p'&&buf[3]==' ')
+    {
+       
+      for( i=4; i<strlen(buf); i++)
+    {
+          file_name[i-4] = buf[i];
+    }
+    
+      file_name[i-4] ='\0';
+    
+    }
+    else 
+        exit(1);
+    
+    if(access(file_name, F_OK)!= -1)
+    {
+        printf("The file does not exist\n");
+    }
+    else 
+        exit(1);
+    
+    
+    
     int numbytes;
     
     
-    if((numbytes = sendto(sockfd, buf, 256, 0, serverinfo->ai_addr, serverinfo->ai_addrlen)) == -1){
+    if((numbytes = sendto(sockfd, "ftp", 256, 0, serverinfo->ai_addr, serverinfo->ai_addrlen)) == -1){
         printf("talker: sendto\n");
         exit(1);
     };
@@ -57,9 +86,12 @@ int main(int argc, char const *argv[]) {
     
     recvfrom(sockfd, buf, 256, 0, (struct sockaddr *) &serv_addr, &serv_addr_size);
     
+    if(strcmp(buf,"yes") == 0 )
+    printf("A file transfer can start\n");    
+    
     freeaddrinfo(serverinfo);
     
-    printf("A file transfer can start\n");
+    
 
     close(sockfd);
     return 0;
