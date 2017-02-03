@@ -7,6 +7,33 @@
 
 int main(int argc, char const *argv[])
 {
+    char buf[256];
+    bzero(buf, 256);
+    fgets(buf, 256, stdin);
+
+    char file_name[256];
+
+    if(buf[0]=='f' && buf[1]=='t' && buf[2]=='p') {
+        int i = 3;
+        while (buf[i] == ' ') {
+            i++;
+        }
+        
+        int file_name_char = 0;
+        while (buf[i] != ' ' && buf[i] != '\n') {
+            file_name[file_name_char] = buf[i];
+            
+            file_name_char++;
+            i++;
+        }
+//        for(i = 4; i < strlen(buf); i++) {
+//            file_name[i-4] = buf[i];
+//        }
+
+        file_name[file_name_char] ='\0';
+    }
+    printf("File name is %s, thicc boi...\n", file_name);
+#if 0
 	if (argc < 2) exit(1);
 
 	int sockfd;	// listen on socket sockfd
@@ -39,8 +66,9 @@ int main(int argc, char const *argv[])
 	} else {
 		sendto(sockfd, "no", 256, 0, (struct sockaddr *) &cli_addr, sizeof(serv_addr));
                 printf("Connection not established\n");
-	}
+	} 
 
 	close(sockfd);
 	return 0;
+#endif
 }
