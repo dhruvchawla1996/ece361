@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include "packet.h"
 
 int main(int argc, char const *argv[])
 {
@@ -37,8 +38,6 @@ int main(int argc, char const *argv[])
 		exit(1);
 	}
 
-    //printf("%s", &buf);
-
 	// send message to client based on message recevied
 	if (strcmp(buf, "ftp") == 0) {
 		sendto(sockfd, "yes", strlen("yes"), 0, (struct sockaddr *) &cli_addr, sizeof(serv_addr));
@@ -52,4 +51,3 @@ int main(int argc, char const *argv[])
 	close(sockfd);
 	return 0;
 }
-

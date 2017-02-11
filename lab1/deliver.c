@@ -6,6 +6,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <unistd.h>
+#include "packet.h"
 
 int main(int argc, char const *argv[]) {
     if (argc < 3) {
@@ -86,4 +87,3 @@ int main(int argc, char const *argv[]) {
 
     return 0;
 }
-
