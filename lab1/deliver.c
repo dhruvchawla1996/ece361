@@ -74,6 +74,14 @@ int main(int argc, char const *argv[]) {
         exit(1);
     }
 
+    // get file size (also opens file)
+    FILE *fp = fopen(file_name, "rb");
+    fseek(fp, 0, SEEK_END);
+    unsigned int file_size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+
+    unsigned int total_frags = (file_size % 1000 == 0) ? (file_size/1000) : (file_size/1000+1);
+
     int numbytes;
     if((numbytes = sendto(sockfd, "ftp", strlen("ftp"), 0, serverinfo->ai_addr, serverinfo->ai_addrlen)) == -1){
         printf("talker: sendto\n");
@@ -94,6 +102,7 @@ int main(int argc, char const *argv[]) {
 
     freeaddrinfo(serverinfo);
     close(sockfd);
+    fclose(fp);
 
     return 0;
 }
