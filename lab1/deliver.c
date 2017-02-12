@@ -28,10 +28,17 @@ int main(int argc, char const *argv[]) {
     hints.ai_socktype = SOCK_DGRAM;
 
     // DNS lookup
-    int status = getaddrinfo(argv[1], argv[2], &hints, &serverinfo );
+    int status;
+    if ((status = getaddrinfo(argv[1], argv[2], &hints, &serverinfo )) == -1) {
+        printf("DNS lookup failed\n");
+        exit(1);
+    }
     socklen_t serv_addr_size = sizeof(serv_addr);
 
-    sockfd = socket(serverinfo->ai_family, serverinfo->ai_socktype, serverinfo->ai_protocol);
+    if ((sockfd = socket(serverinfo->ai_family, serverinfo->ai_socktype, serverinfo->ai_protocol)) == -1) {
+        printf("Can't open socket at client\n");
+        exit(1);
+    }
 
     // get user input
     char buf[256];
@@ -75,7 +82,10 @@ int main(int argc, char const *argv[]) {
 
     bzero(buf, 256);
 
-    recvfrom(sockfd, buf, 256, 0, (struct sockaddr *) &serv_addr, &serv_addr_size);
+    if((numbytes = recvfrom(sockfd, buf, 256, 0, (struct sockaddr *) &serv_addr, &serv_addr_size)) == -1) {
+        printf("No bytes recevied at client\n");
+        exit(1);
+    }
 
 
     if(strcmp(buf,"yes") == 0) {

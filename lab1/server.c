@@ -20,7 +20,10 @@ int main(int argc, char const *argv[])
 
 	// open socket (DGRAM)
 	sockfd = socket(PF_INET, SOCK_DGRAM, 0);
-	if (sockfd < 0) exit(1);
+	if (sockfd < 0) {
+		printf("Can't open socket at server\n");
+		exit(1);
+	}
 
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(port);
@@ -28,23 +31,32 @@ int main(int argc, char const *argv[])
 	memset(serv_addr.sin_zero, '\0', sizeof(serv_addr.sin_zero));
 
 	// bind to socket
-	bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
+	if ((bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr))) == -1) {
+		printf("Can't bind socket\n");
+		exit(1);
+	}
 
 	clilen = sizeof(cli_addr);
 
 	// receive from the client and store info in cli_addr for sending purposes
-	if (recvfrom(sockfd, buf, 256, 0, (struct sockaddr *) &cli_addr, &clilen)==-1) {
+	if (recvfrom(sockfd, buf, 256, 0, (struct sockaddr *) &cli_addr, &clilen) == -1) {
 		printf("Connection lost\n");
 		exit(1);
 	}
 
 	// send message to client based on message recevied
 	if (strcmp(buf, "ftp") == 0) {
-		sendto(sockfd, "yes", strlen("yes"), 0, (struct sockaddr *) &cli_addr, sizeof(serv_addr));
-                printf("Connection established\n");
+		if ((sendto(sockfd, "yes", strlen("yes"), 0, (struct sockaddr *) &cli_addr, sizeof(serv_addr))) == -1) {
+			printf("Can't send bytes from server\n");
+			exit(1);
+		}
+        printf("Connection established\n");
 	} else {
-		sendto(sockfd, "no", strlen("no"), 0, (struct sockaddr *) &cli_addr, sizeof(serv_addr));
-                printf("Connection not established\n");
+		if ((sendto(sockfd, "no", strlen("no"), 0, (struct sockaddr *) &cli_addr, sizeof(serv_addr))) == -1) {
+			printf("Can't send bytes from server\n");
+			exit(1);
+		}
+        printf("Connection not established\n");
 	}
 
 	// close Connection
